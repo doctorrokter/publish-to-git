@@ -15,13 +15,15 @@ const { unlinkAsync } = fs;
 
 tmp.setGracefulCleanup();
 
+const NPM = /^win/.test(process.platform) ? 'npm.cmd' : 'npm';
+
 function spawnNpmWithOutput(args, options) {
   if(!options.verbose) {
-    return execFileAsync('npm', args, options);
+    return execFileAsync(NPM, args, options);
   }
 
   return new Promise((resolve, reject) => {
-    const proc = spawn('npm', args, Object.assign(options, {
+    const proc = spawn(NPM, args, Object.assign(options, {
       stdio: ['inherit', 'pipe', 'inherit'],
       env: Object.assign({}, process.env, Boolean(process.stdout.isTTY) && {
         NPM_CONFIG_COLOR: 'always'
